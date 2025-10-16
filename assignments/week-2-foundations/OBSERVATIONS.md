@@ -38,13 +38,7 @@ They were way more consistent and faster across all sizes.
 
 Lists are still fine for small or quick operations, but once the size increases, sets and dictionaries are the better option.
 
-
-
-
-
-It was actually interesting to see Big-O play used in real life, because sometimes the theory feels a bit abstract, but watching the stopwatch results made it click;  
-
-it helped me connect what I’ve learned to what actually happens when the code runs. 
+It was actually interesting to see Big-O play used in real life, because sometimes the theory feels a bit abstract, but watching the stopwatch results made it click; it helped me connect what I’ve learned to what actually happens when the code runs. 
 
 
 

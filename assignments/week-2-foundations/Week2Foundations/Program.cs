@@ -6,6 +6,7 @@ namespace Week2Foundations
     internal class Program
     {
         static void Main(string[] args)
+
         {// to call the demos one by one
             RunArrayDemo();
             RunListDemo();
@@ -26,7 +27,7 @@ namespace Week2Foundations
             arr[2] = 4;
             arr[5] = 8;
 
-            // to print the value stored at index 2
+         
             Console.WriteLine("Value at index 2: " + arr[2]);
           
           // to look for a specific number in the array
