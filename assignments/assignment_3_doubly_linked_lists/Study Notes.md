@@ -1,5 +1,23 @@
+ Setup & Usage Instructions
+Setup
+1.	Open the project in Visual Studio Code 
+2.	Make sure the working directory is inside
+assignments/assignment_3_doubly_linked_lists/
+3.	In the terminal, run:
+dotnet build
+dotnet run
+4.	The main menu will appear in the console.
 
-How I ran it
+Usage
+•	From the main menu:
+o	Choose 1 → Core List Operations Demo (Part A)
+This tests all basic doubly linked list methods (Steps 3–7).
+o	Choose 2 → Music Playlist Manager (Part B)
+This simulates a real-world playlist using the list logic.
+•	Follow on-screen prompts for each step.
+•	To exit, choose 4 from the main menu.
+
+How I ran and tested it
 1.	dotnet run at the assignment root.
 2.	Used:
 1) Core List Operations Demo (Part A)
@@ -158,7 +176,6 @@ Total duration: 00:14:04
 DisplayCurrentSong
 Now Playing (2 of 3):
 Midnight Sun - Zara Larsson [, 0] (03:09) []
-(Minor cosmetic) The [, 0] [] bits look like leftover placeholders in Song.ToString() or in DisplayCurrentSong() formatting. Functionally fine, just a UI string tidy-up if desired.
 
 GetCurrentSong
 Current song object: Midnight Sun by Zara Larsson (03:09)
@@ -184,13 +201,33 @@ Other:
 •	End/beginning navigation guards shown.
 •	Position and total duration update after add/remove.
 
-Challenges Faced
-•	Handling pointer wiring and head/tail updates during insert and remove.
-•	Validating song positions and duration format in Part B.
-•	Managing edge cases like empty list, single-node list, and start/end navigation.
 
-Performance Reflection
-•	Doubly linked lists give O(1) inserts/removes when you already have a node reference.
-•	Traversal and search are O(n), similar to arrays/lists.
-•	Perfect for playlist or undo/redo features where moving forward/backward matters.
-•	Not ideal for random index lookups compared to List<T>.
+Challenges Faced & How I Solved Them
+1.	Pointer wiring confusion
+At first, it was a bit hard to remember the correct order for connecting the Previous and Next links when insertng in the middle.
+Fix: I broke the steps down slowly, first connected the new node’s links, then updated the neighboring nodes. 
+newNode.Previous = before;
+newNode.Next = before.Next;
+before.Next.Previous = newNode;
+before.Next = newNode;
+2.	Edge cases for empty or single-node lists
+Operations like RemoveFirst or RemoveLast sometimes caused null reference issues when the list was empty or had only one item.
+ Fix: I added guard checks:
+if (head == null) return; // empty list
+if (head == tail) { head = tail = null; return; }
+3.	Reverse logic
+Reversing the list initially didn’t update head and tail correctly.
+ Fix: After flipping Next and Previous for all nodes, I swapped head and tail at the end.
+
+4.	 Playlist duration and display
+In Part B, formatting song duration and marking the current song in DisplayPlaylist() needed testing.
+ Fix: I used string formatting and validated input (mm:ss) with TimeSpan.TryParseExact.
+
+
+ Performance Reflection
+
+After testing everything, I realized how effective a doubly linked list is when you need to add or remove things a lot, especially in the middle or at the start. It felt smoother compared to using arrays or lists that shift everything.
+What stood out most to me was goin backward or reversing the list, it’s something you can’t really do cleanly with a single linked list. But I also noticed it’s not great when you need to access items by index, since it has to loop through each node one by one.
+In conclusion, this structure fits perfectly with the playlist app. You can move forward, go back, jump to a song, or remove a song. It made me see why doubly linked lists are important, and made me understand what they’re used for. 
+
+
