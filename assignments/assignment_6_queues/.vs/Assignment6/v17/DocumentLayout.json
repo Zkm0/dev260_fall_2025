@@ -1,0 +1,77 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|c:\\users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\assignment_notes.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|solutionrelative:assignment_notes.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|c:\\users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|solutionrelative:player.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|c:\\users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\matchmakingsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{93011BD0-90A6-7124-5663-307539329AB7}|Assignment6.csproj|solutionrelative:matchmakingsystem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ASSIGNMENT_NOTES.md",
+              "DocumentMoniker": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\ASSIGNMENT_NOTES.md",
+              "RelativeDocumentMoniker": "ASSIGNMENT_NOTES.md",
+              "ToolTip": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\ASSIGNMENT_NOTES.md",
+              "RelativeToolTip": "ASSIGNMENT_NOTES.md",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2025-11-11T09:19:44.108Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Player.cs",
+              "DocumentMoniker": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\Player.cs",
+              "RelativeDocumentMoniker": "Player.cs",
+              "ToolTip": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\Player.cs",
+              "RelativeToolTip": "Player.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJ8AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T08:58:26.658Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MatchmakingSystem.cs",
+              "DocumentMoniker": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\MatchmakingSystem.cs",
+              "RelativeDocumentMoniker": "MatchmakingSystem.cs",
+              "ToolTip": "C:\\Users\\zoeli\\dev260_fall_2025\\assignments\\assignment_6_queues\\MatchmakingSystem.cs",
+              "RelativeToolTip": "MatchmakingSystem.cs",
+              "ViewState": "AgIAAFgAAAAAAAAAAAAUwHcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-11T07:14:10.157Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
