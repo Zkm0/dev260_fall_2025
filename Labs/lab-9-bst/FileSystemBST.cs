@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace FileSystemNavigator
@@ -206,14 +207,35 @@ namespace FileSystemNavigator
         public List<FileNode> FindFilesBySize(long minSize, long maxSize)
         {
             operationCount++;
-            
-            // TODO: Implement size-based file search
-            // Hints:
-            // 1. Validate input parameters (minSize <= maxSize)
-            // 2. Use TraverseAndCollect with size range filter
-            // 3. Only include FileType.File items
-            
-            throw new NotImplementedException("FindFilesBySize method needs implementation");
+
+            //if tree empty, nothing to return
+            if (root == null)
+            {
+                return new List<FileNode>();
+            }
+
+            // if user accidentally passes min > max, then swap them
+            if (minSize > maxSize)
+            {
+                long temp = minSize;
+                minSize = maxSize;
+                maxSize = temp;
+            }
+
+            // only care about files in this size range
+            var results = new List<FileNode>();
+
+            TraverseAndCollect(
+                root,
+                results,
+                file =>
+                    file.Type == FileType.File &&         
+                    file.Size >= minSize &&              
+                    file.Size <= maxSize                
+            );
+
+           
+            return results;
         }
 
         /// <summary>
@@ -233,15 +255,35 @@ namespace FileSystemNavigator
         public List<FileNode> FindLargestFiles(int count)
         {
             operationCount++;
-            
-            // TODO: Implement largest files search
-            // Hints:
-            // 1. Collect all files using traversal
-            // 2. Sort by Size property (descending)
-            // 3. Take top 'count' items
-            // 4. Handle edge case where count <= 0
-            
-            throw new NotImplementedException("FindLargestFiles method needs implementation");
+
+            //non positive count
+            if (count <= 0 || root == null)
+            {
+                return new List<FileNode>();
+            }
+
+            // collect all files in the tree
+            var allFiles = new List<FileNode>();
+
+            TraverseAndCollect(
+                root,
+                allFiles,
+                file => file.Type == FileType.File 
+            );
+
+            // sort descending by size
+            var sorted = allFiles
+                .OrderByDescending(f => f.Size)
+                .ToList();
+
+            // if count > number of files,return everything
+            if (count >= sorted.Count)
+            {
+                return sorted;
+            }
+
+          
+            return sorted.Take(count).ToList();
         }
 
         /// <summary>
@@ -260,14 +302,29 @@ namespace FileSystemNavigator
         public long CalculateTotalSize()
         {
             operationCount++;
-            
-            // TODO: Implement total size calculation
-            // Hints:
-            // 1. Use recursive helper method to traverse tree
-            // 2. Sum the Size property of all nodes
-            // 3. Handle empty tree case (return 0)
-            
-            throw new NotImplementedException("CalculateTotalSize method needs implementation");
+
+          // empty tree, size is 0
+            if (root == null)
+                return 0;
+
+            long total = 0;
+
+            void SumSizes(TreeNode? node)
+            {
+                if (node == null)
+                    return;
+
+               
+                total += node.FileData.Size;
+
+              
+                SumSizes(node.Left);
+                SumSizes(node.Right);
+            }
+
+            SumSizes(root);
+
+            return total;
         }
 
         /// <summary>
@@ -287,15 +344,17 @@ namespace FileSystemNavigator
         public bool DeleteItem(string fileName)
         {
             operationCount++;
-            
-            // TODO: Implement file/directory deletion
-            // Hints:
-            // 1. Find the node to delete first
-            // 2. Handle three cases: no children, one child, two children
-            // 3. For two children case, find inorder successor
-            // 4. Update tree structure properly
-            
-            throw new NotImplementedException("DeleteItem method needs implementation");
+
+           
+            if (string.IsNullOrWhiteSpace(fileName))
+                return false;
+
+            bool deleted = false;
+
+            // start the deletion from the root
+            root = DeleteNode(root, fileName.Trim(), ref deleted);
+
+            return deleted;
         }
 
         // ============================================
@@ -334,8 +393,6 @@ namespace FileSystemNavigator
             }
             else
             {
-              
-
 
             }
 
@@ -394,6 +451,70 @@ namespace FileSystemNavigator
             }
 
             TraverseAndCollect(node.Right, collection, filter);
+        }
+
+
+        // added helper for deleting a node by name
+        private TreeNode? DeleteNode(TreeNode? node, string fileName, ref bool deleted)
+        {
+            // if empty spot, nothing to delete 
+            if (node == null)
+                return null;
+
+            // current node name 
+            string currentName = node.FileData.Name;
+
+            // compare target name vs current node's name
+            int cmp = string.Compare(
+                fileName,
+                currentName,
+                StringComparison.OrdinalIgnoreCase
+            );
+
+            if (cmp < 0)
+            {
+                // when target is smaller, go left
+                node.Left = DeleteNode(node.Left, fileName, ref deleted);
+            }
+            else if (cmp > 0)
+            {
+                // when target is bigger, go right
+                node.Right = DeleteNode(node.Right, fileName, ref deleted);
+            }
+            else
+            {
+                // found the node to delete
+                deleted = true;
+
+                // CASE 1: if no children, remove the node
+                if (node.Left == null && node.Right == null)
+                {
+                    return null;
+                }
+
+                // CASE 2: if one child, return that child
+                if (node.Left == null)
+                    return node.Right;
+
+                if (node.Right == null)
+                    return node.Left;
+
+                // CASE 3: two children
+                TreeNode successor = node.Right;
+                while (successor.Left != null)
+                {
+                    successor = successor.Left;
+                }
+
+                // copy successor's data into this node
+                node.FileData = successor.FileData;
+
+                // delete the successor from the right subtree
+                bool dummy = false; 
+                node.Right = DeleteNode(node.Right, successor.FileData.Name, ref dummy);
+            }
+
+            return node;
         }
 
         /// <summary>
