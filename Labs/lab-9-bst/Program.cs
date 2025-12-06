@@ -30,6 +30,8 @@ namespace FileSystemNavigator
                 
                 // Start the interactive application
                 navigator.Run();
+
+
             }
             catch (Exception ex)
             {
@@ -41,6 +43,8 @@ namespace FileSystemNavigator
                 Console.WriteLine("\nPress any key to exit...");
                 Console.ReadKey();
             }
+
+
         }
     }
 }

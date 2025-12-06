@@ -56,24 +56,25 @@ namespace FileSystemNavigator
         {
             operationCount++;
 
-            // Normalize comparison 
-            string target = fileName.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(fileName))
+                return false;
 
-            // Check if file already exists
-            var existing = SearchNode(root, target);
+            // We treat the thing we are looking for as a FILE
+            var existing = SearchNode(root, fileName.Trim(), FileType.File);
             if (existing != null)
             {
-                // Do not insert duplicate
+                // A file with this name already exists
                 return false;
             }
 
-            // Create a new FileNode 
+            // Create a new FileNode for a file
             var newFile = new FileNode(
                 name: fileName,
                 type: FileType.File,
                 size: size
             );
 
+            // Insert into the BST
             root = InsertNode(root, newFile);
 
             return true;
@@ -97,25 +98,23 @@ namespace FileSystemNavigator
         {
             operationCount++;
 
-            // normalize name
-            string target = directoryName.Trim().ToLower();
+            if (string.IsNullOrWhiteSpace(directoryName))
+                return false;
 
-            // check if something with this name already exists; names must be unique
-            var existing = SearchNode(root, target);
+            // We treat the thing we are looking for as a DIRECTORY
+            var existing = SearchNode(root, directoryName.Trim(), FileType.Directory);
             if (existing != null)
             {
-                // if already have an item with this name, don’t create a duplicate
+                // A directory with this name already exists
                 return false;
             }
 
-            // create a directory node; size 0
             var newDir = new FileNode(
                 name: directoryName,
                 type: FileType.Directory,
-                size: 0
+                size: 0         // directories have size 0 in this model
             );
 
-            // Insert into the tree 
             root = InsertNode(root, newDir);
 
             return true;
@@ -142,10 +141,8 @@ namespace FileSystemNavigator
             if (string.IsNullOrWhiteSpace(fileName))
                 return null;
 
-            string target = fileName.Trim().ToLower();
-
-            // call the recursive helper
-            return SearchNode(root, target);
+            // Only search for actual FILES (not directories)
+            return SearchNode(root, fileName.Trim(), FileType.File);
         }
 
         /// <summary>
@@ -345,14 +342,20 @@ namespace FileSystemNavigator
         {
             operationCount++;
 
-           
             if (string.IsNullOrWhiteSpace(fileName))
                 return false;
 
             bool deleted = false;
+            string target = fileName.Trim();
 
-            // start the deletion from the root
-            root = DeleteNode(root, fileName.Trim(), ref deleted);
+            // 1) Try deleting a FILE with this name
+            root = DeleteNode(root, target, FileType.File, ref deleted);
+
+            // 2) If no file was deleted, try deleting a DIRECTORY with this name
+            if (!deleted)
+            {
+                root = DeleteNode(root, target, FileType.Directory, ref deleted);
+            }
 
             return deleted;
         }
@@ -399,34 +402,35 @@ namespace FileSystemNavigator
             return node;
         }
 
-        
 
         /// <summary>
         /// Helper method for BST searching
         /// Students should use this in FindFile
         /// </summary>
-        private FileNode? SearchNode(TreeNode? node, string fileName)
+        private FileNode? SearchNode(TreeNode? node, string fileName, FileType type)
         {
-            // nothing; not found
             if (node == null)
                 return null;
 
-            string current = node.FileData.Name.ToLower();
+            // build a key node to compare using the same rules as InsertNode
+            var key = new FileNode(fileName, type, 0);
 
-            // found the file
-            if (current == fileName)
-                return node.FileData;
+            int compare = CompareFileNodes(key, node.FileData);
 
-            // Compare alphabetically to decide search direction
-            if (string.Compare(fileName, current, StringComparison.OrdinalIgnoreCase) < 0)
+            if (compare == 0)
             {
-                // search left subtree
-                return SearchNode(node.Left, fileName);
+                // found exact match (same type + same name)
+                return node.FileData;
+            }
+            else if (compare < 0)
+            {
+                // Key in the left subtree
+                return SearchNode(node.Left, fileName, type);
             }
             else
             {
-                // search right subtree
-                return SearchNode(node.Right, fileName);
+                // Key in the right subtree
+                return SearchNode(node.Right, fileName, type);
             }
         }
 
@@ -436,10 +440,9 @@ namespace FileSystemNavigator
         /// </summary>
         private void TraverseAndCollect(TreeNode? node, List<FileNode> collection, Func<FileNode, bool> filter)
         {
-            //nothing here
             if (node == null) return;
 
-            // left to current to right
+            // left -> node -> right
             TraverseAndCollect(node.Left, collection, filter);
 
             var file = node.FileData;
@@ -455,67 +458,75 @@ namespace FileSystemNavigator
 
 
         // added helper for deleting a node by name
-        private TreeNode? DeleteNode(TreeNode? node, string fileName, ref bool deleted)
+        private TreeNode? DeleteNode(TreeNode? node, string fileName, FileType type, ref bool deleted)
         {
-            // if empty spot, nothing to delete 
             if (node == null)
                 return null;
 
-            // current node name 
-            string currentName = node.FileData.Name;
+            var key = new FileNode(fileName, type, 0);
+            int compare = CompareFileNodes(key, node.FileData);
 
-            // compare target name vs current node's name
-            int cmp = string.Compare(
-                fileName,
-                currentName,
-                StringComparison.OrdinalIgnoreCase
-            );
-
-            if (cmp < 0)
+            if (compare < 0)
             {
-                // when target is smaller, go left
-                node.Left = DeleteNode(node.Left, fileName, ref deleted);
+                // the target item is in the left subtree
+                node.Left = DeleteNode(node.Left, fileName, type, ref deleted);
             }
-            else if (cmp > 0)
+            else if (compare > 0)
             {
-                // when target is bigger, go right
-                node.Right = DeleteNode(node.Right, fileName, ref deleted);
+                // the target item is in the right subtree
+                node.Right = DeleteNode(node.Right, fileName, type, ref deleted);
             }
             else
             {
                 // found the node to delete
                 deleted = true;
 
-                // CASE 1: if no children, remove the node
+                // Case 1: no children
                 if (node.Left == null && node.Right == null)
                 {
                     return null;
                 }
 
-                // CASE 2: if one child, return that child
+                // Case 2: one child
                 if (node.Left == null)
-                    return node.Right;
-
-                if (node.Right == null)
-                    return node.Left;
-
-                // CASE 3: two children
-                TreeNode successor = node.Right;
-                while (successor.Left != null)
                 {
-                    successor = successor.Left;
+                    return node.Right;
+                }
+                if (node.Right == null)
+                {
+                    return node.Left;
                 }
 
-                // copy successor's data into this node
+                // Case 3: two children
+                // smallest node in right subtree
+                TreeNode successor = FindMinNode(node.Right);
+
+                // copy successor's data into current node
                 node.FileData = successor.FileData;
 
-                // delete the successor from the right subtree
-                bool dummy = false; 
-                node.Right = DeleteNode(node.Right, successor.FileData.Name, ref dummy);
+                // delete the successor node from the right subtree
+                node.Right = DeleteNode(
+                    node.Right,
+                    successor.FileData.Name,
+                    successor.FileData.Type,
+                    ref deleted
+                );
             }
 
             return node;
         }
+
+
+        // Find the minimum node in a subtree
+        private TreeNode FindMinNode(TreeNode node)
+        {
+            while (node.Left != null)
+            {
+                node = node.Left;
+            }
+            return node;
+        }
+        
 
         /// <summary>
         /// Custom comparison method for file system ordering
