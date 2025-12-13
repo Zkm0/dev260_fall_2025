@@ -1,0 +1,19 @@
+# Ignore Visual Studio workspace files
+.vs/
+*/.vs/
+
+# Ignore build folders
+bin/
+obj/
+
+# Ignore common compiled files
+*.dll
+*.pdb
+*.exe
+
+# Ignore user-specific files
+*.user
+*.suo
+*.cache
+*.log
+*.tmp
